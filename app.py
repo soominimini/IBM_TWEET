@@ -1,6 +1,8 @@
 import GetOldTweets3 as got
 import datetime, time
 from random import uniform
+
+from django.db.models.expressions import Col
 from tqdm import tqdm_notebook
 
 #아래는 ibm API
@@ -24,6 +26,7 @@ import seaborn as sns
 #flask 기반 웹 프로그래밍 라이브러리
 from flask import Flask, render_template, request, send_from_directory, redirect, url_for
 from flask_sqlalchemy import SQLAlchemy
+from sqlalchemy import Column, Integer, String
 from werkzeug.utils import secure_filename
 
 url = 'https://gateway.watsonplatform.net/personality-insights/api'
@@ -38,10 +41,14 @@ db = SQLAlchemy(app)
 
 #DB 구조
 class User(db.Model):
-    id = db.column(db.Integer,primary_key=True)
-    sns_id = db.column(db.VARCHAR(150)) #연동할 SNS 아이디
-    platform_id = db.column(db.VARCHAR(150))
-    password = db.column(db.VARCHAR(150))
+    id = Column(db.Integer, primary_key=True)
+    sns_id = Column(db.VARCHAR(150)) #연동할 SNS 아이디
+    platform_id = Column(db.VARCHAR(150))
+    password = Column(db.VARCHAR(150))
+
+    def __init__(self, id =None):
+        id = self.id
+
 
 
 
@@ -74,7 +81,7 @@ def init_page():
         return render_template('index.html')
 
     elif request.method=='POST':
-        tweet_id = request.form['txt']
+        tweet_id = request.form['txtsns']
 
         tweetCriteria = got.manager.TweetCriteria().setUsername(tweet_id+"") \
             .setSince(start_date) \
