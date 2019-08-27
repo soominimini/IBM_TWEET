@@ -36,6 +36,15 @@ app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///test.db'
 db = SQLAlchemy(app)
 
 
+#DB 구조
+class User(db.Model):
+    id = db.column(db.Integer,primary_key=True)
+    sns_id = db.column(db.VARCHAR(150)) #연동할 SNS 아이디
+    platform_id = db.column(db.VARCHAR(150))
+    password = db.column(db.VARCHAR(150))
+
+
+
 days_range = []
 
 start = datetime.datetime.strptime("2019-01-01", "%Y-%m-%d")
